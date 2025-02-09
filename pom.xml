@@ -77,7 +77,7 @@
 
             <dependency>
                 <groupId>org.aspectj</groupId>
-                <artifactId>aspectjrt</artifactId>
+                <artifactId>aspectjrtdte</artifactId>
                 <version>${aspectj}</version>
             </dependency>
 
