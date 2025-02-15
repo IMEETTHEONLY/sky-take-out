@@ -116,4 +116,20 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     }
 
+
+    //启用禁用员工账号
+    @Override
+    public void startOrStop(Integer status, Long id) {
+        //这里是一个更新的操作，但是只更新了两个字段 其实可以做一个通用的更新接口  方法如下:
+
+        //利用构造器 创建一个对象 里面就是传递的参数
+        Employee e = Employee.builder()
+                .status(status)
+                .id(id)
+                .build();
+
+        //调mapper进行更新
+        employeeMapper.update(e);
+    }
+
 }
