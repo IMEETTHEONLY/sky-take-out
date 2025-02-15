@@ -12,7 +12,7 @@
         order by create_time desc
     </select>
 
-    <update id="update">
+    <update id="update" parameterType="employee">
         UPDATE employee
         <set>
             <if test="name != null">
