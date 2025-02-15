@@ -32,4 +32,6 @@ public interface EmployeeMapper {
 
 
     void update(Employee e);
+    @Select("select * from employee where id=#{id}")
+    Employee getById(Long id);
 }
