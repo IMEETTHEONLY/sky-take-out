@@ -90,7 +90,7 @@ public class CategoryController {
     }
 
     /**
-     * 根据类型查询分类  这里是要查询全部的分类 所以说不能和分页写在一起,独立出来
+     * 根据类型查询分类 展示再增加菜品下拉框当中
      * @param type
      * @return
      */

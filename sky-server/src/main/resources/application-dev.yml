@@ -6,3 +6,10 @@ sky:
     database: sky_take_out
     username: root
     password: 1234
+
+
+  alioss:
+    access-key-id: LTAI5tNznfMcUm2di3mzc5Jc
+    access-key-secret: P2PIcYsUjoMkesOopiuBqHIvKWkbGe
+    bucket-name: family-doctor-project
+    endpoint: oss-cn-hangzhou.aliyuncs.com

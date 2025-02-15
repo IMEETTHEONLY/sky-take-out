@@ -52,7 +52,7 @@ public class AutoFillAspect {
             //暴力反射获取set方法进行设置
 
 
-            //第二个参数是该方法的参数
+            //反射获取实体的方法，然后进行执行
             Method setCreateTime = entity.getClass().getDeclaredMethod("setCreateTime", LocalDateTime.class);
             Method setCreateUser = entity.getClass().getDeclaredMethod("setCreateUser",Long.class);
             Method setUpdateTime = entity.getClass().getDeclaredMethod("setUpdateTime", LocalDateTime.class);
