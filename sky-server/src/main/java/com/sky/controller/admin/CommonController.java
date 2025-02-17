@@ -1,5 +1,6 @@
 package com.sky.controller.admin;
 
+import com.sky.constant.MessageConstant;
 import com.sky.result.Result;
 import com.sky.utils.AliOssUtil;
 import io.swagger.annotations.Api;
@@ -17,7 +18,7 @@ import java.util.UUID;
 @RestController
 @Slf4j
 @RequestMapping("/admin/common")
-@Api("通用接口")
+@Api(tags = "通用接口")
 public class CommonController {
     @Autowired
     private AliOssUtil aliOssUtil;
@@ -43,7 +44,7 @@ public class CommonController {
             log.info("文件上传失败..",e);
         }
 
-        return Result.error("文件上传失败...");
+        return Result.error(MessageConstant.UPLOAD_FAILED);
 
 
     }
