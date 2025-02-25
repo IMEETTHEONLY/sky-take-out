@@ -41,4 +41,7 @@ public interface DishMapper {
     //修改菜品
     @AutoFill(OperationType.UPDATE)  //自动填充
     void update(Dish dish);
+
+    //根据分类id和查询菜品数据
+    List<Dish> list(Dish dish);
 }
