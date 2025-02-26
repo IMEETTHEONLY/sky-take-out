@@ -46,5 +46,7 @@ public interface DishMapper {
     //根据分类id和查询菜品数据
     List<Dish> list(Dish dish);
 
-
+    //根据套餐id查询菜品
+    @Select("select status from dish d left outer join setmeal_dish sd on d.id=sd.dish_id where setmeal_id=#{id}")
+    List<Dish> getBySetmealId(Long id);
 }
