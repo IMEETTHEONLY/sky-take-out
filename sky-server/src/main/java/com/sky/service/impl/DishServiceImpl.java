@@ -175,4 +175,17 @@ public class DishServiceImpl implements DishService {
         return dishVOList;
     }
 
+    @Override
+    public void startOrStop(Integer status, Long id) {
+        //将属性封装在dish里面 调用通一的update方法
+        Dish dish = Dish.builder()
+                .status(status)
+                .id(id)
+                .build();
+
+        //调用update方法更新
+        dishMapper.update(dish);
+    }
+
+
 }

@@ -30,4 +30,6 @@ public interface DishService {
      */
     List<DishVO> listWithFlavor(Dish dish);
 
+    //菜品起售/停售
+    void startOrStop(Integer status, Long id);
 }
