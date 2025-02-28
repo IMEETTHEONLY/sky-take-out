@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class ShoppingCartServiceImpl implements ShoppingCartService {
@@ -35,10 +36,12 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
         //条件查询 这里只可能返回null 或者是一条数据 因为同一条数据 占一行 只是number不同
         //根据userId和dishId,setmealId ,口味来查询  这四个任何一个不一样都一条新数据
-        ShoppingCart cart = shoppingCartMappper.list(shoppingCart);
+        List<ShoppingCart> list = shoppingCartMappper.list(shoppingCart);
+
 
         //如果说有就将number数量+1
-        if(cart!=null){
+        if(list!=null&&list.size()>0){
+            ShoppingCart cart=list.get(0);
             //获取原来的number
             Integer number = cart.getNumber();
             number++;
@@ -78,6 +81,58 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
             //将shoppingCart插入到数据库
             shoppingCartMappper.insert(shoppingCart);
+        }
+    }
+
+    //查看购物车数据
+    public List<ShoppingCart> showShoppingCart() {
+        //构造shoppingcart进行查询
+        ShoppingCart shoppingCart = ShoppingCart.builder()
+                .id(BaseContext.getCurrentId())
+                .build();
+        List<ShoppingCart> list=shoppingCartMappper.list(shoppingCart);
+        return list;
+    }
+
+    //清空购物车
+    public void cleanShoppingCart() {
+        //获取用户id
+        Long userId = BaseContext.getCurrentId();
+        shoppingCartMappper.deleteByUserId(userId);
+    }
+
+    //减少购物车
+    public void subShoppingCart(ShoppingCartDTO shoppingCartDTO) {
+        //先查询这条购物车的记录
+
+        //获取用户id
+        Long userId = BaseContext.getCurrentId();
+
+        //将dto的数据拷贝到ShoppingCart
+        ShoppingCart shoppingCart=new ShoppingCart();
+        BeanUtils.copyProperties(shoppingCartDTO,shoppingCart);
+        //设置userid
+        shoppingCart.setUserId(userId);
+
+
+        //调用list查询 套餐/菜品
+        //查询购物车的数据
+        List<ShoppingCart> list = shoppingCartMappper.list(shoppingCart);
+        //此时肯定有一条数据 获取出来即可
+        ShoppingCart cart = list.get(0);
+
+        //如果说此时的number大于1 则将number
+        Integer number = cart.getNumber();
+        if(number>1){
+            //将数量减一 然后重新加入
+            number--;
+            cart.setNumber(number);
+            shoppingCartMappper.updateNumberById(cart);
+        }
+
+        //此时的number=1就将这条记录删掉
+        else{
+            shoppingCartMappper.deleteById(cart);
         }
     }
 }
