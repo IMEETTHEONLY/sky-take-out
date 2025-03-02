@@ -1,18 +1,23 @@
 package com.sky.controller.user;
 
+import com.sky.dto.OrdersPageQueryDTO;
 import com.sky.dto.OrdersPaymentDTO;
 import com.sky.dto.OrdersSubmitDTO;
 import com.sky.entity.OrderDetail;
 import com.sky.entity.Orders;
+import com.sky.result.PageResult;
 import com.sky.result.Result;
 import com.sky.service.OrderService;
 import com.sky.vo.OrderPaymentVO;
 import com.sky.vo.OrderSubmitVO;
+import com.sky.vo.OrderVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController()
 @RequestMapping("/user/order")
@@ -45,13 +50,35 @@ public class OrderController {
         log.info("生成预支付交易单：{}", orderPaymentVO);
         return Result.success(orderPaymentVO);
     }
-
+    //订单详细查询
     @GetMapping("/orderDetail/{id}")
     @ApiOperation("订单详细查询")
-    public Result<Orders> orderDetail(@PathVariable Integer id){
+    public Result<OrderVO> orderDetail(@PathVariable Long id){
         log.info("查询订单详情:{}",id);
-        Orders order= orderService.getOrderDetailById(id);
-        return Result.success(order);
+        OrderVO orderVO= orderService.getOrderDetailById(id);
+        return Result.success(orderVO);
     }
+
+
+    //用户催单
+    @GetMapping("/reminder/{id}")
+    @ApiOperation("用户催单")
+    public Result reminder(@PathVariable Long id){
+        log.info("用户催单的订单{}",id);
+        orderService.reminder(id);
+        return Result.success();
+    }
+
+    //用户历史订单
+    @GetMapping("historyOrders")
+    @ApiOperation("查询用户历史订单")
+    public Result<PageResult> historyOrders(OrdersPageQueryDTO ordersPageQueryDTO){
+        log.info("分页查询历史订单:{}",ordersPageQueryDTO);
+        PageResult pageResult=orderService.historyOrders(ordersPageQueryDTO);
+        return Result.success(pageResult);
+
+    }
+
+
 
 }

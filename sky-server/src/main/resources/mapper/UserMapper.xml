@@ -10,5 +10,18 @@
             (#{openid},#{name},#{phone},#{sex},#{idNumber},#{avatar},#{createTime, jdbcType=TIMESTAMP})
     </insert>
 
+<!--    根据map条件来查询用户-->
+    <select id="getByMap" resultType="java.lang.Integer">
+        select count(id) from user
+        <where>
+            <if test="begin!=null">
+               and create_time &gt; #{begin}
+            </if>
+            <if test="end!=null">
+               and create_time &lt; #{end}
+            </if>
+        </where>
+    </select>
+
 
 </mapper>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sky.mapper.ReportMapper">
+
+<!--    条件查询 每日的总金额-->
+    <select id="getSumByMap" resultType="Double">
+        select sum(amount) from orders
+        <where>
+            <if test="begin!=null">
+                order_time &gt; #{begin}
+            </if>
+#             订单时间小于最晚时间
+            <if test="end!=null">
+               and order_time &lt; #{end}
+            </if>
+            <if test="status!=null">
+                and status=#{status}
+            </if>
+        </where>
+    </select>
+</mapper>

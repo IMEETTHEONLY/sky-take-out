@@ -83,4 +83,50 @@
         </set>
         where id = #{id}
     </update>
+
+    <select id="page" resultType="com.sky.entity.Orders">
+        select * from orders
+        <where>
+            <if test="status != null">
+                AND status = #{status}
+            </if>
+            <if test="beginTime != null and endTime != null">
+                AND order_time BETWEEN #{beginTime} AND #{endTime}
+            </if>
+            <if test="userId != null">
+                AND user_id = #{userId}
+            </if>
+            <!-- 注意：如果需要根据number或phone进行过滤，请确保orders表中有相应的字段 -->
+            <if test="number != null and number != ''">
+                AND number = #{number}
+            </if>
+            <if test="phone != null and phone != ''">
+                AND phone = #{phone}
+            </if>
+        </where>
+        order by order_time
+    </select>
+
+    <select id="getByMap" resultType="java.lang.Integer">
+        select count(id) from orders
+        <where>
+        <if test="status != null">
+            AND status = #{status}
+        </if>
+        <if test="begin != null and end != null">
+            AND order_time BETWEEN #{begin} AND #{end}
+        </if>
+        </where>
+    </select>
+    <select id="getTop10" resultType="com.sky.dto.GoodsSalesDTO">
+        select name,count(*) as number from orders o left outer join order_detail od on o.id = od.order_id
+        <where>
+            <if test="begin != null and end != null">
+                AND order_time BETWEEN #{begin} AND #{end}
+            </if>
+        </where>
+        group by od.name
+        order by number desc
+        limit 0,10
+    </select>
 </mapper>

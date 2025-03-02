@@ -2,8 +2,11 @@ package com.sky.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import com.sky.constant.MessageConstant;
 import com.sky.context.BaseContext;
+import com.sky.dto.OrdersPageQueryDTO;
 import com.sky.dto.OrdersPaymentDTO;
 import com.sky.dto.OrdersSubmitDTO;
 import com.sky.entity.*;
@@ -11,6 +14,7 @@ import com.sky.exception.AddressBookBusinessException;
 import com.sky.exception.OrderBusinessException;
 import com.sky.exception.ShoppingCartBusinessException;
 import com.sky.mapper.*;
+import com.sky.result.PageResult;
 import com.sky.service.OrderService;
 import com.sky.utils.WeChatPayUtil;
 import com.sky.vo.OrderPaymentVO;
@@ -185,9 +189,66 @@ public class OrderServiceImpl implements OrderService {
     }
 
     //根据id获取订单详情
-    public Orders getOrderDetailById(Integer id) {
-       Orders order= orderMapper.getOrderDetailById(id);
-       return order;
+    public OrderVO getOrderDetailById(Long id) {
+        //先将order的数据查询出来
+       Orders order= orderMapper.getById(id);
+
+       //再将order对应的菜品数据查询出来
+        List<OrderDetail> orderDetailList=orderDetailMapper.getByOrderId(id);
+
+        //封装到vo当中
+        OrderVO orderVO=new OrderVO();
+        BeanUtils.copyProperties(order,orderVO);
+        orderVO.setOrderDetailList(orderDetailList);
+       return orderVO;
+    }
+
+   //用户催单
+    public void reminder(Long id) {
+        //首先查询数据库是否存在这条订单
+        Orders order = orderMapper.getById(id);
+        //不存在抛出订单不存在异常
+        if(order==null){
+            throw new OrderBusinessException(MessageConstant.ORDER_NOT_FOUND);
+        }
+
+        //向后台客户端发送数据即可
+        Map map=new HashMap();
+        map.put("type",2); //1代表来单提醒 2代表催单
+        map.put("orderId",id);
+        map.put("content","订单号:"+order.getNumber());
+
+        String s = JSON.toJSONString(map);
+
+        webSocketServer.sendToAllClient(s);
+
+    }
+
+    //分页查询历史数据
+    public PageResult historyOrders(OrdersPageQueryDTO ordersPageQueryDTO) {
+        //获取用户的id
+        Long userId = BaseContext.getCurrentId();
+        ordersPageQueryDTO.setUserId(userId);
+
+        PageHelper.startPage(ordersPageQueryDTO.getPage(),ordersPageQueryDTO.getPageSize());
+        Page<Orders> page=orderMapper.page(ordersPageQueryDTO);
+        //获取封装好的分页的orders
+        List<Orders> ordersList = page.getResult();
+
+        //根据orders去查询订单明细然后封装到vo当中
+        List<OrderVO> orderVOList=new ArrayList<>();
+
+        for (Orders orders : ordersList) {
+            OrderVO orderVO=new OrderVO();
+            //查询订单明细列表
+            List<OrderDetail> byOrderId = orderDetailMapper.getByOrderId(orders.getId());
+            orderVO.setOrderDetailList(byOrderId);
+            //将order的数据拷贝到vo
+            BeanUtils.copyProperties(orders,orderVO);
+            orderVOList.add(orderVO);
+        }
+
+        return new PageResult(page.getTotal(),orderVOList);
     }
 
 }
