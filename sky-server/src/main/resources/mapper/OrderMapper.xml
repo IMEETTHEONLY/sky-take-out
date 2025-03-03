@@ -130,7 +130,7 @@
                 AND phone = #{phone}
             </if>
         </where>
-        order by order_time
+        order by order_time desc
     </select>
 
     <select id="getByMap" resultType="java.lang.Integer">

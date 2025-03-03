@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDate;
 
 @RestController
@@ -75,5 +76,16 @@ public class ReportController {
         log.info("top10:{}","从"+begin+"到"+end);
         SalesTop10ReportVO reportVO=reportService.gettop10(begin,end);
         return Result.success(reportVO);
+    }
+
+    /**
+     * 下载统计报表数据
+     */
+    @GetMapping("/export")
+    @ApiOperation("下载统计报表数据")
+    //servlet对象接收请求的时候 会自动生成一个 response和 request对象 可以使用他们的流来传输数据
+    public void export(HttpServletResponse httpServletResponse){
+        log.info("下载统计报表数据");
+        reportService.getExport(httpServletResponse);
     }
 }
