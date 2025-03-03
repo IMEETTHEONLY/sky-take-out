@@ -1,0 +1,29 @@
+sky:
+#mysql数据源
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    host: localhost
+    port: 3306
+    database: 
+    username: 
+    password: 
+
+#阿里云数据源
+  alioss:
+    endpoint: 
+    bucket-name: 
+    access-key-secret: 
+    access-key-id: 
+
+#配置redis的数据源
+  redis:
+    host: 
+    port: 
+    password: 
+    database: 
+
+
+#配置微信登录需要使用的appid 和secret
+  wechat:
+    appid: 
+    secret: 
