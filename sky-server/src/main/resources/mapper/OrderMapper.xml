@@ -124,7 +124,7 @@
             </if>
             <!-- 注意：如果需要根据number或phone进行过滤，请确保orders表中有相应的字段 -->
             <if test="number != null and number != ''">
-                AND number = #{number}
+                AND number LIKE CONCAT('%', #{number}, '%')
             </if>
             <if test="phone != null and phone != ''">
                 AND phone = #{phone}

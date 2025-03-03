@@ -68,4 +68,6 @@ public interface OrderMapper {
     @Select("select * from orders where status=#{status} and order_time<#{time}")
     List<Orders> getByStatusAndOrderTimeLF(int status, LocalDateTime time);
 
+    Double sumByMap(Map map);
+
 }
